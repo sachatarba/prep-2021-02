@@ -1,7 +1,8 @@
-#ifndef IS_PRIME_H
-#define IS_PRIME_H
+//#ifndef IS_PRIME_H
+//#define IS_PRIME_H
 
 
 int is_prime(int num);
 
-#endif
+int print_numbers(int n);
+//#endif??
