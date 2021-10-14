@@ -12,11 +12,5 @@ int is_prime(size_t num){
     return 1;
 }
 
-/*int print_numbers(int n){
-    if(n==1){
-        printf("%i",n)
-    }
-    else
-}   
-*/
+
 
