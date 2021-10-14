@@ -1,8 +1,4 @@
-//#ifndef IS_PRIME_H
-//#define IS_PRIME_H
+#include "stddef.h"
 
+int is_prime(size_t num);
 
-int is_prime(int num);
-
-int print_numbers(int n);
-//#endif??

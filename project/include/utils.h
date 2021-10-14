@@ -3,7 +3,7 @@
 #define UTILS_H
 
 
-size_t timer_from(unsigned char from);
+size_t timer_from(int from);
 // TODO: Implement `power of` function
 int custom_pow(int base, int power);
 
