@@ -1,8 +1,8 @@
 #include "utils.h"
 #include "isprime.h"
-#include "stddef.h"
-#include "stdio.h"
-#include "stdlib.h"
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include "printnumbers.h"
 
 #define ERR_ARGS_COUNT (-1)
@@ -48,7 +48,7 @@ int main(int argc, const char** argv) {
             if (argc == 4) {
                 int base = atoi(data);
                 int pow =  atoi(argv[3]);
-                int res = custom_pow(base, pow);    // TODO: Implement me
+                int res = custom_pow(base, pow);
                 printf("%i\n", res);
             } else {
                 return ERR_ARGS_COUNT;
@@ -57,15 +57,12 @@ int main(int argc, const char** argv) {
         }
         case TST_MOD_IMPL: {
             size_t num = atoi(data);
-            int answer=is_prime(num);
-            printf("%i",answer);
+            int answer = is_prime(num);
+            printf("%i", answer);
             break;
-            // TODO: Print to stdout `1` if `num` is prime number and `0` otherwise
-            // This function MUST be implemented in
-            // a separate C-module (not in `main` or `utils` module)
         }
-        case TST_REC_FUN:{
-            int n=atoi(data);
+        case TST_REC_FUN: {
+            int n = atoi(data);
             print_numbers(n);
             break;
         }
