@@ -16,8 +16,7 @@ build: $(TARGET)
 
 rebuild: clean build
 
-check:
-	./linters/run.sh
+
 
 test: $(TARGET)
 	./btests/run.sh $(TARGET)
