@@ -2,45 +2,32 @@
 #include <stdlib.h>
 #include "utils.h"
 #include "masterRecord.h"
+#include "function.h"
 
-
-typedef struct masterRecord Data;
-
-void masterWrite(FILE * ofPTR, Data Client);
-void transactionWrite(FILE * ofPTR, Data transfer);
-void blackRecord(FILE * ofPTR, FILE * ofPTR_2, FILE * blackrecord, Data client_data, Data transfer);
-
-int main()
-{
+int main() {
     int choice = 0;
     FILE *Ptr, *Ptr_2, *blackrecord;
     Data client_data;
     Data transfer;
     printf("%s", "please enter action\n1 enter data client:\n2 enter data transaction:\n3 update base\n");
-    while (scanf("%d", &choice) != -1)
-    {
-        switch (choice)
-        {
+    while (scanf("%d", &choice) != -1) {
+        switch (choice) {
         case 1:
             Ptr = fopen("record.dat", "r+");
-            if (Ptr == NULL)
-            {
+            if (Ptr == NULL) {
                 puts("Not acess");
             }
-            else
-            {
+            else {
                 masterWrite(Ptr, client_data);
                 fclose(Ptr);
             }
             break;
         case 2:
             Ptr = fopen("record.dat", "r+");
-            if (Ptr == NULL)
-            {
+            if (Ptr == NULL) {
                 puts("Not acess");
             }
-            else
-            {
+            else {
                 transactionWrite(Ptr, transfer);
                 fclose(Ptr);
             }
@@ -49,12 +36,10 @@ int main()
             Ptr = fopen("record.dat", "r");
             Ptr_2 = fopen("transaction.dat", "r");
             blackrecord = fopen("blackrecord.dat", "w");
-            if (Ptr == NULL || Ptr_2 == NULL || blackrecord == NULL)
-            {
+            if (Ptr == NULL || Ptr_2 == NULL || blackrecord == NULL) {
                 puts("exit");
             }
-            else
-            {
+            else {
                 blackRecord(Ptr, Ptr_2, blackrecord, client_data, transfer);
                 free(Ptr);
                 fclose(Ptr);
@@ -70,8 +55,7 @@ int main()
     }
     return 0;
 }
-void masterWrite(FILE *ofPTR, Data Client)
-{
+void masterWrite(FILE *ofPTR, Data Client) {
     printf("%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n\n",
            "1 Number account: ",
            "2 Client name: ",
@@ -81,8 +65,7 @@ void masterWrite(FILE *ofPTR, Data Client)
            "6 Client indebtedness: ",
            "7 Client credit limit: ",
            "8 Client cash payments: ");
-    while (scanf("%d%s%s%s%s%lf%lf%lf", &Client.Number, Client.Name, Client.Surname, Client.addres, Client.TelNumber, &Client.indebtedness, &Client.credit_limit, &Client.cash_payments) != -1)
-    {
+    while (scanf("%d%s%s%s%s%lf%lf%lf", &Client.Number, Client.Name, Client.Surname, Client.addres, Client.TelNumber, &Client.indebtedness, &Client.credit_limit, &Client.cash_payments) != -1) {
         fprintf(ofPTR, "%-12d%-11s%-11s%-16s%20s%12.2f%12.2f%12.2f\n", Client.Number, Client.Name, Client.Surname, Client.addres, Client.TelNumber, Client.indebtedness, Client.credit_limit, Client.cash_payments);
         printf("%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n\n",
                "1 Number account: ",
@@ -93,33 +76,5 @@ void masterWrite(FILE *ofPTR, Data Client)
                "6 Client indebtedness: ",
                "7 Client credit limit: ",
                "9 Client cash payments:");
-    }
-}
-void transactionWrite(FILE *ofPtr, Data transfer)
-{
-    printf("%s\n%s\n",
-           "1 Number account: ",
-           "2 Client cash payments: ");
-    while (scanf("%d %lf", &transfer.Number, &transfer.cash_payments) != -1)
-    {
-        fprintf(ofPtr, "%-3d%-6.2f\n", transfer.Number, transfer.cash_payments);
-        printf("%s\n%s\n",
-               "1 Number account:",
-               "2 Client cash payments:");
-    }
-}
-void blackRecord(FILE *ofPTR, FILE *ofPTR_2, FILE *blackrecord, Data client_data, Data transfer)
-{
-    while (fscanf(ofPTR, "%d%s%s%s%s%lf%lf%lf", &client_data.Number, client_data.Name, client_data.Surname, client_data.addres, client_data.TelNumber, &client_data.indebtedness, &client_data.credit_limit, &client_data.cash_payments) != -1)
-    {
-        while (fscanf(ofPTR_2, "%d %lf", &transfer.Number, &transfer.cash_payments) != -1)
-        {
-            if (client_data.Number == transfer.Number && transfer.cash_payments != 0)
-            {
-                client_data.credit_limit += transfer.cash_payments;
-            }
-        }
-        fprintf(blackrecord, "%-12d%-11s%-11s%-16s%20s%12.2f%12.2f%12.2f\n", client_data.Number, client_data.Name, client_data.Surname, client_data.addres, client_data.TelNumber, client_data.indebtedness, client_data.credit_limit, client_data.cash_payments);
-        rewind(ofPTR_2);
-    }
+	} 
 }

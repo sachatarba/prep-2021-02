@@ -2,8 +2,7 @@ TARGET = ./main.out
 HDRS_DIR = project/include
 
 SRCS = project/src/main.c\
-       project/src/function.c\
-	   project/src/
+       project/src/function.c
 
 .PHONY: all build rebuild check test memtest clean
 
