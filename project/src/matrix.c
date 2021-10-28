@@ -5,28 +5,31 @@
 #define max(a, b) ((a) > (b) ? (a) : (b))
 #define min(a, b) ((a) < (b) ? (a) : (b))
 
-// Формула перехода от номера строки и столбца элемента матрицы к индексу, который он занимает в одномерном массиве:
-// index=row * (matrix->columns - 1) + col -1
+/*
+Формула перехода от номера строки и столбца элемента матрицы к индексу,
+который он занимает в одномерном массиве:
+index=row * (matrix->columns - 1) + col -1
+*/
 
 // Базовые операции
 Matrix* create_matrix_from_file(const char* path_file) {
-    FILE* matrix_input = path_file;
+    FILE* matrix_input;
+    matrix_input = fopen(path_file, "r");
     if (matrix_input == NULL) {
         return NULL;
-    }
-    else {
-        fopen(matrix_input, "r")
+    } else {
         size_t cols;
         size_t rows;
         fscanf(matrix_input, "%zu", &cols);
         fscanf(matrix_input, "%zu", &rows);
-        Matrix* matrix = create_matrix(rows, cols);
-        for (size_t current_col = 0; current_col < cols; ++current_col) {
-            for (size_t current_row = 0; current_row < rows; ++current_row) {
-                fscanf(matrix_input, "%d", matrix->body[i*cols+j])
+        Matrix* ret = create_matrix(rows, cols);
+        for (size_t current_row = 0; current_row < rows; ++current_row) {
+            for (size_t current_col = 0; current_col < cols; ++current_col) {
+                fscanf(matrix_input, "%lf", &ret->body[current_row*cols+current_col]);
             }
         }
-    }  
+    return ret;
+    }
 }
 
 Matrix* create_matrix(size_t rows, size_t cols) {
@@ -92,61 +95,38 @@ int set_elem(Matrix* matrix, size_t row, size_t col, double val) {
 Matrix* mul_scalar(const Matrix* matrix, double val) {
     if (matrix == NULL) {
         return NULL;
-    }
-    else {
-        ret = create_matrix(matrix->rows, matrix->columns);
-        for (size_t i = 0; i < matrix->rows * matrix->columns) {
+    } else {
+        Matrix* ret = create_matrix(matrix->rows, matrix->columns);
+        for (size_t i = 0; i < matrix->rows * matrix->columns; ++i) {
             ret->body[i] = matrix->body[i] * val;
         }
         return ret;
-    }    
+    }
 }
 
 Matrix* transp(const Matrix* matrix) {
     if (matrix == NULL || matrix->rows != matrix->columns) {
         return NULL;
-    }
-    /*for (int element = 0; element < matrix->rows * matrix->columns) {
-        // Вычисляем номер строки и столбца элемента в матрице, зная индекс элемента в одномерном массиве.
-        element_row = element / matrix->columns + 1;
-        element_col = element % matrix->rows + 1;
-        // Т.к. элемент матрицы при ее транспонировании поменяет местами свой номер строки и столбца,
-        // то вычислим с учeтом этого индекс элемента, который он займет после транспонирования в одномерном массиве.
-        index_after_transp=element_col * (matrix->columns - 1) + element_row -1;
-    }
-    
-    for (size_t i = 0; i < matrix->rows; ++i) {
-        for (size_t j = 0; j < i; ++j) {
-            // Т.к. элемент матрицы при ее транспонировании поменяет местами свой номер строки и столбца,
-            // то вычислим с учeтом этого индекс элемента, который он займет после транспонирования в одномерном массиве.
-            index_after_transp = j * matrix->columns + i;
-            temp=matrix->body[i * matrix->columns + j];
-            matrix->body[i * matrix->columns + j] = matrix->body[index_after_transp];
-            matrix->body[index_after_transp] = temp;
-        }
-    }
-    */
-    else {
-        ret = create_matrix(matrix->rows, matrix->columns);
+    } else {
+        Matrix* ret = create_matrix(matrix->rows, matrix->columns);
         for (size_t current_row = 0; current_row < matrix->rows; ++current_row) {
-            for ( size_t current_col = 0; current_col < matrix->columns; ++current_col) {
+            for (size_t current_col = 0; current_col < matrix->columns; ++current_col) {
                 // Т.к. элемент матрицы при ее транспонировании поменяет местами свой номер строки и столбца,
-                // то вычислим с учeтом этого индекс элемента, который он займет после транспонирования в одномерном массиве.
-                index_after_transp = current_col * matrix->columns + current_row;
+                // то вычислим с учeтом этого индекс элемента, который он займет после транспонирования
+                // в одномерном массиве.
+                unsigned int index_after_transp = current_col * matrix->columns + current_row;
                 ret->body[index_after_transp] = matrix->body[current_row * matrix->rows + current_col];
             }
-        
         }
-        return ret;    
+        return ret;
     }
 }
 
 Matrix* sum(const Matrix* l, const Matrix* r) {
     if (l == NULL || r == NULL || l->columns != r->columns || l->rows != r->columns) {
         return NULL;
-    }
-    else {
-        ret = create_matrix(l->rows, l->columns);
+    } else {
+        Matrix* ret = create_matrix(l->rows, l->columns);
         for (size_t i = 0; i < l->columns * l->columns; ++i) {
             ret->body[i] = l->body[i] + r->body[i];
         }
@@ -157,9 +137,8 @@ Matrix* sum(const Matrix* l, const Matrix* r) {
 Matrix* sub(const Matrix* l, const Matrix* r) {
     if (l == NULL || r == NULL || l->columns != r->columns || l->rows != r->columns) {
         return NULL;
-    }
-    else {
-        ret = create_matrix(l->rows, l->columns);
+    } else {
+        Matrix* ret = create_matrix(l->rows, l->columns);
         for (size_t i = 0; i < l->columns * l->columns; ++i) {
             ret->body[i] = l->body[i] - r->body[i];
         }
@@ -181,8 +160,8 @@ int det(const Matrix* matrix, double* val) {
         *val = matrix->body[0] * matrix->body[3] - matrix->body[1] * matrix->body[2];
         return 0;
     }
-    int ret = 0;
-    int temp_ret = 1;
+    double ret = 0;
+    double temp_ret = 1;
     int sign = 1;
     for (int i = 0; i < size; ++i) {
         Matrix* temp_matrix_minor;
