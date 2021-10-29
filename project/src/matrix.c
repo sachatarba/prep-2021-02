@@ -33,7 +33,7 @@ Matrix* create_matrix_from_file(const char* path_file) {
 }
 
 Matrix* create_matrix(size_t rows, size_t cols) {
-    Matrix* ret = (Matrix*) calloc(1,sizeof(Matrix));
+    Matrix* ret = (Matrix*) calloc(1, sizeof(Matrix));
     ret->rows = rows;
     ret->columns = cols;
     ret->body = (double*) calloc(ret->rows * ret->columns, sizeof(double));
@@ -74,10 +74,10 @@ int get_elem(const Matrix* matrix, size_t row, size_t col, double* val) {
     if (col >= matrix->columns) {
         return 1;
     }
-    //*val = matrix->body[row * min(matrix->rows, matrix->columns) + col];
-    //*val = -0.1;
+    // *val = matrix->body[row * min(matrix->rows, matrix->columns) + col];
+    // *val = -0.1;
     *val = matrix->body[row * (matrix->columns) + col];
-    //*val = -10.1;
+    // *val = -10.1;
     return 0;
 }
 
@@ -126,11 +126,12 @@ Matrix* transp(const Matrix* matrix) {
 }
 
 Matrix* sum(const Matrix* l, const Matrix* r) {
-    if (l == NULL || r == NULL || l->columns != r->columns || l->rows != r->rows || l->columns == 0 || l->rows == 0) {
+    if (l == NULL || r == NULL || l->columns != r->columns || l->rows != r->rows  || \
+    l->columns == 0 || l->rows == 0) {
         return NULL;
     } else {
-        //Matrix* ret = create_matrix(l->rows, l->columns);
-        Matrix* ret = create_matrix(r->rows,r->columns);
+        // Matrix* ret = create_matrix(l->rows, l->columns);
+        Matrix* ret = create_matrix(r->rows, r->columns);
         for (size_t i = 0; i < l->columns * l->columns; ++i) {
             ret->body[i] = l->body[i] + r->body[i];
         }
