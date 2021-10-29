@@ -25,7 +25,7 @@ Matrix* create_matrix_from_file(const char* path_file) {
         Matrix* ret = create_matrix(rows, cols);
         for (size_t current_row = 0; current_row < rows; ++current_row) {
             for (size_t current_col = 0; current_col < cols; ++current_col) {
-                fscanf(matrix_input, "%lf", &ret->body[current_row*cols+current_col]);
+                fscanf(matrix_input, "%lf", &ret->body[current_row * cols + current_col]);
             }
         }
     return ret;
@@ -33,10 +33,10 @@ Matrix* create_matrix_from_file(const char* path_file) {
 }
 
 Matrix* create_matrix(size_t rows, size_t cols) {
-    Matrix* ret = (Matrix*) calloc(1, sizeof(Matrix));
+    Matrix* ret = (Matrix*) malloc(sizeof(Matrix));
     ret->rows = rows;
     ret->columns = cols;
-    ret->body = (double*) calloc(ret->rows * ret->columns, sizeof(double));
+    ret->body = (double*) calloc(rows * cols, sizeof(double));
     return ret;
 }
 
@@ -110,17 +110,20 @@ Matrix* mul_scalar(const Matrix* matrix, double val) {
 }
 
 Matrix* transp(const Matrix* matrix) {
-    if (matrix == NULL || matrix->rows != matrix->columns) {
+    if (matrix == NULL) {
         return NULL;
     } else {
-        Matrix* ret = create_matrix(matrix->rows, matrix->columns);
+        Matrix* ret = create_matrix(matrix->columns, matrix->rows);
         for (size_t current_row = 0; current_row < matrix->rows; ++current_row) {
             for (size_t current_col = 0; current_col < matrix->columns; ++current_col) {
                 // Т.к. элемент матрицы при ее транспонировании поменяет местами свой номер строки и столбца,
                 // то вычислим с учeтом этого индекс элемента, который он займет после транспонирования
                 // в одномерном массиве.
-                unsigned int index_after_transp = current_col * matrix->columns + current_row;
-                ret->body[index_after_transp] = matrix->body[current_row * matrix->rows + current_col];
+                // unsigned int index_after_transp = current_col * matrix->columns + current_row;
+                // ret->body[index_after_transp] = matrix->body[current_row * matrix->rows + current_col];
+                double element = 0;
+                get_elem(matrix, current_row, current_col, &element);
+                set_elem(ret, current_col, current_row, element);
             }
         }
         return ret;
@@ -134,7 +137,7 @@ Matrix* sum(const Matrix* l, const Matrix* r) {
     } else {
         // Matrix* ret = create_matrix(l->rows, l->columns);
         Matrix* ret = create_matrix(r->rows, r->columns);
-        for (size_t i = 0; i < l->columns * l->columns; ++i) {
+        for (size_t i = 0; i < l->columns * l->rows; ++i) {
             ret->body[i] = l->body[i] + r->body[i];
         }
         return ret;
@@ -142,11 +145,11 @@ Matrix* sum(const Matrix* l, const Matrix* r) {
 }
 
 Matrix* sub(const Matrix* l, const Matrix* r) {
-    if (l == NULL || r == NULL || l->columns != r->columns || l->rows != r->columns) {
+    if (l == NULL || r == NULL || l->columns != r->columns || l->rows != r->rows) {
         return NULL;
     } else {
         Matrix* ret = create_matrix(l->rows, l->columns);
-        for (size_t i = 0; i < l->columns * l->columns; ++i) {
+        for (size_t i = 0; i < l->columns * l->rows; ++i) {
             ret->body[i] = l->body[i] - r->body[i];
         }
         return ret;
