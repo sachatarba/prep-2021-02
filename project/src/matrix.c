@@ -20,8 +20,8 @@ Matrix* create_matrix_from_file(const char* path_file) {
     } else {
         size_t cols;
         size_t rows;
-        fscanf(matrix_input, "%zu", &cols);
         fscanf(matrix_input, "%zu", &rows);
+        fscanf(matrix_input, "%zu", &cols);
         Matrix* ret = create_matrix(rows, cols);
         for (size_t current_row = 0; current_row < rows; ++current_row) {
             for (size_t current_col = 0; current_col < cols; ++current_col) {
@@ -33,10 +33,10 @@ Matrix* create_matrix_from_file(const char* path_file) {
 }
 
 Matrix* create_matrix(size_t rows, size_t cols) {
-    Matrix* ret = (Matrix*)malloc(sizeof(Matrix));
+    Matrix* ret = (Matrix*) calloc(1,sizeof(Matrix));
     ret->rows = rows;
     ret->columns = cols;
-    ret->body = (double*)calloc(ret->rows * ret->columns, sizeof(double));
+    ret->body = (double*) calloc(ret->rows * ret->columns, sizeof(double));
     return ret;
 }
 
@@ -74,7 +74,10 @@ int get_elem(const Matrix* matrix, size_t row, size_t col, double* val) {
     if (col >= matrix->columns) {
         return 1;
     }
-    *val = matrix->body[row * min(matrix->rows, matrix->columns) + col];
+    //*val = matrix->body[row * min(matrix->rows, matrix->columns) + col];
+    //*val = -0.1;
+    *val = matrix->body[row * (matrix->columns) + col];
+    //*val = -10.1;
     return 0;
 }
 
@@ -88,7 +91,7 @@ int set_elem(Matrix* matrix, size_t row, size_t col, double val) {
     if (col >= matrix->columns) {
         return 1;
     }
-    matrix->body[row * min(matrix->rows, matrix->columns) + col] = val;
+    matrix->body[row * matrix->columns + col] = val;
     return 0;
 }
 // Математические операции
@@ -123,10 +126,11 @@ Matrix* transp(const Matrix* matrix) {
 }
 
 Matrix* sum(const Matrix* l, const Matrix* r) {
-    if (l == NULL || r == NULL || l->columns != r->columns || l->rows != r->columns) {
+    if (l == NULL || r == NULL || l->columns != r->columns || l->rows != r->rows || l->columns == 0 || l->rows == 0) {
         return NULL;
     } else {
-        Matrix* ret = create_matrix(l->rows, l->columns);
+        //Matrix* ret = create_matrix(l->rows, l->columns);
+        Matrix* ret = create_matrix(r->rows,r->columns);
         for (size_t i = 0; i < l->columns * l->columns; ++i) {
             ret->body[i] = l->body[i] + r->body[i];
         }
@@ -146,6 +150,24 @@ Matrix* sub(const Matrix* l, const Matrix* r) {
     }
 }
 
+Matrix* mul(const Matrix* l, const Matrix* r) {
+    if (l == NULL || r == NULL || l->columns != r->rows) {
+        return NULL;
+    } else {
+        Matrix* ret = create_matrix(l->rows, r->columns);
+        for (size_t current_row = 0; current_row < l->rows; ++current_row) {
+            for (size_t current_col = 0; current_col < r->columns; ++current_col) {
+                double element_of_ret = 0;
+                for (size_t current_pos = 0; current_pos < r->rows; ++current_pos) {
+                    element_of_ret += l->body[current_row * l->columns + current_pos] * \
+                    r->body[current_pos * r->columns + current_col];
+                }
+            ret->body[current_row * r->columns + current_col] = element_of_ret;
+            }
+        }
+    return ret;
+    }
+}
 // Дополнительные операции
 int det(const Matrix* matrix, double* val) {
     if (matrix->columns != matrix->rows || matrix->rows < 1) {
@@ -179,4 +201,14 @@ int det(const Matrix* matrix, double* val) {
     }
     *val = ret;
     return 0;
+}
+
+Matrix* adj(const Matrix* matrix) {
+    Matrix* ret = create_matrix(matrix->rows, matrix->columns);
+    return ret;
+}
+
+Matrix* inv(const Matrix* matrix) {
+    Matrix* ret = create_matrix(matrix->rows, matrix->columns);
+    return ret;
 }
