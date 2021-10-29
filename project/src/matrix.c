@@ -46,7 +46,7 @@ void free_matrix(Matrix* matrix) {
     }
     if (matrix->body != NULL) {
         free(matrix->body);
-    }    
+    }
     free(matrix);
 }
 
