@@ -197,13 +197,13 @@ Matrix* adj(const Matrix* matrix) {
     if (matrix == NULL || matrix->body == NULL || matrix->rows != matrix->columns) {
         return NULL;
     }
-    Matrix* ret = create_matrix(matrix->rows, matrix->columns);
-    int size = matrix->rows;
-    for (int current_row = 0; current_row < size; ++current_row) {
-        for (int current_col = 0; current_col < size; ++current_col) {
+    Matrix* ret = create_matrix(matrix->rows, matrix->rows);
+    size_t size = matrix->rows;
+    for (size_t current_row = 0; current_row < size; ++current_row) {
+        for (size_t current_col = 0; current_col < size; ++current_col) {
             Matrix* temp_matrix_minor;
             temp_matrix_minor = create_matrix(size - 1, size - 1);
-            for (int current_pos = 0, counter = 0; current_pos < size * size; ++current_pos) {
+            for (size_t current_pos = 0, counter = 0; current_pos < size * size; ++current_pos) {
                 if (current_pos % size != current_col && current_pos / size != current_row) {
                     double element_of_minor = 1;
                     get_elem(matrix, current_pos / size, current_pos % size, &element_of_minor);
@@ -227,15 +227,25 @@ Matrix* inv(const Matrix* matrix) {
     if (matrix == NULL || matrix->body == NULL || matrix->rows != matrix->columns || matrix->rows <= 1) {
         return NULL;
     }
-    size_t size = matrix->rows;
+    int size = matrix->rows;
     double det_matrix = 1;
     det(matrix, &det_matrix);
-    if (det_matrix == 0) {
+    if (det_matrix < 1e-6) {
         return NULL;
     }
-    Matrix* ret = adj(matrix);
-    for (size_t current_pos = 0; current_pos < size * size; ++current_pos) {
-        ret->body[current_pos] /= det_matrix;
+    Matrix* ret = create_matrix(size + 1, size + 1);
+    Matrix* adj_matrix = adj(matrix);
+    for (int current_pos = 0; current_pos < size * size; ++current_pos) {
+        ret->body[current_pos] = adj_matrix->body[current_pos] / det_matrix;
     }
+    // ret->body[size * size - 1] = adj_matrix->body[size * size - 1] / det_matrix;
+    // int current_pos = 0;
+    // while (current_pos < size * size) {
+    //    ret->body[current_pos] = adj_matrix->body[current_pos] / det_matrix;
+    //    ++current_pos;
+    //}
+    // ret->rows = size;
+    // ret->columns = size;
+    free_matrix(adj_matrix);
     return ret;
 }
