@@ -175,19 +175,19 @@ int det(const Matrix* matrix, double* val) {
     double ret = 0;
     double temp_ret = 1;
     int sign = 1;
-    for (int i = 0; i < size; ++i) {
-        Matrix* temp_matrix;
-        temp_matrix = create_matrix(size - 1, size - 1);
-        for (int j = 0, k = 0; j < size * size - size; ++j) {
-            if ((j - i) % size) {
-                temp_matrix->body[k] = matrix->body[size + j];
-                ++k;
+    for (int current_col = 0; current_col < size; ++current_col) {
+        Matrix* temp_matrix_minor;
+        temp_matrix_minor = create_matrix(size - 1, size - 1);
+        for (int current_pos = 0, counter = 0; current_pos < size * size - size; ++current_pos) {
+            if ((current_pos - current_col) % size) {
+                temp_matrix_minor->body[counter] = matrix->body[size + current_pos];
+                ++counter;
             }
         }
-        det(temp_matrix, &temp_ret);
-        ret += sign * matrix->body[i] * temp_ret;
+        det(temp_matrix_minor, &temp_ret);
+        ret += sign * matrix->body[current_col] * temp_ret;
         sign *= -1;
-        free_matrix(temp_matrix);
+        free_matrix(temp_matrix_minor);
     }
     *val = ret;
     return 0;
@@ -197,20 +197,45 @@ Matrix* adj(const Matrix* matrix) {
     if (matrix == NULL || matrix->body == NULL || matrix->rows != matrix->columns) {
         return NULL;
     }
-    /*
     Matrix* ret = create_matrix(matrix->rows, matrix->columns);
     int size = matrix->rows;
-    for (size_t current_row = 0; current_row < size; ++current_row) {
-        for (size_t current_col = 0; current_col < size; ++current_row) {
-
+    for (int current_row = 0; current_row < size; ++current_row) {
+        for (int current_col = 0; current_col < size; ++current_col) {
+            Matrix* temp_matrix_minor;
+            temp_matrix_minor = create_matrix(size - 1, size - 1);
+            for (int current_pos = 0, counter = 0; current_pos < size * size; ++current_pos) {
+                if (current_pos % size != current_col && current_pos / size != current_row) {
+                    double element_of_minor = 1;
+                    get_elem(matrix, current_pos / size, current_pos % size, &element_of_minor);
+                    temp_matrix_minor->body[counter] = element_of_minor;
+                    ++counter;
+                }
+            }
+            double alg_compl = 0;
+            det(temp_matrix_minor, &alg_compl);
+            if ((current_row + current_col) % 2 != 0) {
+                alg_compl *= -1;
+            }
+            free_matrix(temp_matrix_minor);
+            set_elem(ret, current_col, current_row, alg_compl);
         }
     }
-    */
-    // return ret;
-    return NULL;
+    return ret;
 }
 
 Matrix* inv(const Matrix* matrix) {
-    Matrix* ret = create_matrix(matrix->rows, matrix->columns);
+    if (matrix == NULL || matrix->body == NULL || matrix->rows != matrix->columns || matrix->rows <= 1) {
+        return NULL;
+    }
+    size_t size = matrix->rows;
+    double det_matrix = 1;
+    det(matrix, &det_matrix);
+    if (det_matrix == 0) {
+        return NULL;
+    }
+    Matrix* ret = adj(matrix);
+    for (size_t current_pos = 0; current_pos < size * size; ++current_pos) {
+        ret->body[current_pos] /= det_matrix;
+    }
     return ret;
 }
