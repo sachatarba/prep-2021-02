@@ -3,7 +3,7 @@
 #include <stddef.h>
 
 
-int is_prime(size_t number);
+int is_prime(int number);
 
 
 #endif  // PROJECT_INCLUDE_IS_PRIME_H_

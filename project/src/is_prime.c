@@ -1,17 +1,18 @@
 #include "is_prime.h"
-#include <stddef.h>
 
 
-int is_prime(size_t number) {
+int is_prime(int number) {
     if (number < 2) {
         return 0;
     }
-    for (size_t i = 2; i < number; ++i) {
-        if (number % i == 0) {
-            return 0;
+    int is_prime = 1;
+    for (int delimiter = 2; delimiter < number; ++delimiter) {
+        if (number % delimiter == 0) {
+            is_prime = 0;
+            break;
         }
     }
-    return 1;
+    return is_prime;
 }
 
 

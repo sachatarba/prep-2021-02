@@ -1,9 +1,10 @@
-#include "utils.h"
-#include "is_prime.h"
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "print_numbers.h"
+#include "is_prime.h"
+#include "print_numbers_from_one.h"
+#include "utils.h"
 
 #define ERR_ARGS_COUNT (-1)
 #define ERR_WRONG_FLG (-2)
@@ -25,31 +26,29 @@ int main(int argc, const char** argv) {
 
     switch (Test_case) {
         case TST_FOO_FIX: {
-            int to = atoi(data);
-            size_t ticks_count = timer_from(to);
+            int from = atoi(data);
+            size_t ticks_count = timer_from(from);
             printf("%zu\n", ticks_count);
             break;
         }
         case TST_FOO_IMPL: {
-            if (argc == 4) {
-                int base = atoi(data);
-                int pow =  atoi(argv[3]);
-                int res = custom_pow(base, pow);
-                printf("%i\n", res);
-            } else {
+            if (argc != 4) {
                 return ERR_ARGS_COUNT;
             }
+            int base = atoi(data);
+            int pow =  atoi(argv[3]);
+            int res = custom_pow(base, pow);
+            printf("%i\n", res);
             break;
         }
         case TST_MOD_IMPL: {
-            size_t num = atoi(data);
-            int answer = is_prime(num);
-            printf("%i", answer);
+            int num = atoi(data);
+            printf("%i", is_prime(num));
             break;
         }
         case TST_REC_FUN: {
-            int n = atoi(data);
-            print_numbers(n);
+            int last_number = atoi(data);
+            print_numbers_from_one(last_number);
             break;
         }
 

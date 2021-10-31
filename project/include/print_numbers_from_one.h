@@ -1,0 +1,8 @@
+#ifndef PROJECT_INCLUDE_PRINT_NUMBERS_FROM_ONE_H_
+#define PROJECT_INCLUDE_PRINT_NUMBERS_FROM_ONE_H_
+
+
+void print_numbers_from_one(int last_number);
+
+
+#endif  // PROJECT_INCLUDE_PRINT_NUMBERS_FROM_ONE_H_

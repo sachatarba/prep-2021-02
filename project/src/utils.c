@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stddef.h>
 
+
 size_t timer_from(int from) {
     size_t counter = 0;
     for (int i = from; i >= 0; --i) {
@@ -17,6 +18,9 @@ size_t timer_from(int from) {
 
 
 int custom_pow(int base, int power) {
+    if (power < 0) {
+        return -1;
+    }
     int result = 1;
     for (int i = 0; i < power; ++i) {
        result *= base;

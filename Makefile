@@ -6,7 +6,7 @@ SRCS = \
        project/src/main.c \
        project/src/utils.c \
        project/src/is_prime.c \
-       project/src/print_numbers.c
+       project/src/print_numbers_from_one.c
 
 .PHONY: all build rebuild check test clean
 
