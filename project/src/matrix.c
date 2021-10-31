@@ -224,8 +224,14 @@ Matrix* adj(const Matrix* matrix) {
 }
 
 Matrix* inv(const Matrix* matrix) {
-    if (matrix == NULL || matrix->body == NULL || matrix->rows != matrix->columns || matrix->rows <= 1) {
+    if (matrix == NULL || matrix->body == NULL || matrix->rows != matrix->columns || matrix->rows < 1) {
         return NULL;
+    }
+    if (matrix->rows == 1) {
+        Matrix* ret = create_matrix(1, 1);
+        ret->body[0] = matrix->body[0];
+        ret->rows = 1;
+        return ret;
     }
     int size = matrix->rows;
     double det_matrix = 1;
