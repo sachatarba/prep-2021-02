@@ -243,7 +243,7 @@ Matrix* inv(const Matrix* matrix) {
     // while (current_pos < size * size) {
     //    ret->body[current_pos] = adj_matrix->body[current_pos] / det_matrix;
     //    ++current_pos;
-    //}
+    // }
     // ret->rows = size;
     // ret->columns = size;
     free_matrix(adj_matrix);
