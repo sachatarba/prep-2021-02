@@ -20,14 +20,14 @@ int main(int argc, const char** argv) {
         return ERR_ARGS_COUNT;
     }
 
-    int Test_case = atoi(argv[1]);
+    int test_case = atoi(argv[1]);
     const char* data;
     data = argv[2];
 
-    switch (Test_case) {
+    switch (test_case) {
         case TST_FOO_FIX: {
-            int from = atoi(data);
-            size_t ticks_count = timer_from(from);
+            int start = atoi(data);
+            size_t ticks_count = timer_from(start);
             printf("%zu\n", ticks_count);
             break;
         }
