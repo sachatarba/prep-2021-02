@@ -3,6 +3,10 @@ VALGRIND_LOG = "valgrind.log"
 
 SRCS = \
 	   project/src/main.c \
+	   project/src/key_value.c \
+	   project/src/parser.c \
+	   project/src/utils.c
+
 
 .PHONY: all check build test memtest rebuild clean
 
