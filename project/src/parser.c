@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+
 #define BUFF_SIZE 1024
 #define HEADER_DELIMITER ':'
 #define new(type) (type*) malloc(sizeof(type))
@@ -40,6 +41,41 @@ char* strip(char* source) {
         source[i - start - 1] = source[i];
     }
     source[end - start - 1] = '\0';
+    return source;
+}
+
+char* replace_char(char* source, char sym, char to_replace) {
+    int length = strlen(source);
+    for (int i = 0; i < length; ++i) {
+        if (source[i] == sym) {
+            source[i] = to_replace;
+        }
+    }
+    return source;
+}
+
+char* remove_char(char* source, int pos) {
+    int length = strlen(source);
+    if (pos < 0 || pos >= length) {
+        return NULL;
+    }
+    for (int i = pos; i < length - 1; ++i) {
+        source[i] = source[i + 1];
+    }
+    source[length - 1] = '\0';
+    return source;
+}
+
+char* remove_char_by_value(char* source, char to_remove) {
+    char* ptr = strchr(source, to_remove);
+    if (ptr == NULL) {
+        return NULL;
+    }
+    return remove_char(source, ptr - source);
+}
+
+char* remove_all_char(char* source, char to_remove) {
+    while (remove_char_by_value(source, to_remove) != NULL);
     return source;
 }
 
@@ -90,6 +126,8 @@ Header* header_from_string(char* source) {
     if (split_string(source, HEADER_DELIMITER, &key, &value) != 0) {
         return NULL;
     }
+    remove_all_char(value, '\n');
+    remove_all_char(value, '\r');
     return new_header(strip(key), strip(value));
 }
 
@@ -148,12 +186,12 @@ Header* find_header(Header** source, int size, char* key) {
 }
 
 int parser(const char *path_to_eml) {
-    //FILE* file = fopen(path_to_eml, "r");
-    FILE* file = fopen("nice-shad.eml", "r");
+    FILE* file = fopen(path_to_eml, "r");
+    //FILE* file = fopen("nice-shad.eml", "r");
     int size;
     Header** h = read_headers(file, &size);
     char *KEYS[] = {"From", "To", "Date"};
-    /*for (size_t current_KEY = 0; current_KEY < 3; ++current_KEY) {
+    for (size_t current_KEY = 0; current_KEY < 3; ++current_KEY) {
         if (find_header(h, size, KEYS[current_KEY]) != NULL) {
             printf("%s|", find_header(h, size, KEYS[current_KEY]) -> value);
         }
@@ -162,8 +200,8 @@ int parser(const char *path_to_eml) {
         }
     } 
     puts("1");
-    */
-    printf("%s", find_header(h, size, KEYS[0]) -> value);
+    
+    //printf("%s", find_header(h, size, KEYS[0]) -> value);
     /*for (int i = 0; i < size; ++i) {
         printf("|%s| -> |%s|\n", h[i]->key, h[i]->value);
     }
