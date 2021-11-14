@@ -43,7 +43,7 @@ char* strip(char* source) {
     return source;
 }
 
-typedef struct Header {
+typedef struct {
     char* key;
     char* value;
 } Header;
@@ -119,7 +119,7 @@ Header** read_headers(FILE* file, int* size) {
             ret = add(ret, &ret_size, tmp);
             break;
         }
-        if (buff[0] != ' ') {
+        if (!(buff[0] == ' ' || buff[0] == '\t')) {
             tmp = header_from_string(raw_header);
             if (tmp == NULL) {
                 *size = ret_size;
@@ -148,16 +148,22 @@ Header* find_header(Header** source, int size, char* key) {
 }
 
 int parser(const char *path_to_eml) {
-    FILE* file = fopen(path_to_eml, "r");
+    //FILE* file = fopen(path_to_eml, "r");
+    FILE* file = fopen("nice-shad.eml", "r");
     int size;
     Header** h = read_headers(file, &size);
-    char *KEYS[] = {"From", "To", "Date", "Content-Type"};
-    for (size_t current_KEY = 0; current_KEY < 4; ++current_KEY) {
+    char *KEYS[] = {"From", "To", "Date"};
+    /*for (size_t current_KEY = 0; current_KEY < 3; ++current_KEY) {
         if (find_header(h, size, KEYS[current_KEY]) != NULL) {
-            printf("|%s", find_header(h, size, KEYS[current_KEY]) -> value);
+            printf("%s|", find_header(h, size, KEYS[current_KEY]) -> value);
+        }
+        else {
+            printf("%c", '|');
         }
     } 
     puts("1");
+    */
+    printf("%s", find_header(h, size, KEYS[0]) -> value);
     /*for (int i = 0; i < size; ++i) {
         printf("|%s| -> |%s|\n", h[i]->key, h[i]->value);
     }
