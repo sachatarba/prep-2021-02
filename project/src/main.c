@@ -9,6 +9,6 @@ int main(int argc, const char **argv) {
 
     const char *path_to_eml = argv[1];
 
-    emails_parser(path_to_eml);
+    parser(path_to_eml);
     return 0;
 }

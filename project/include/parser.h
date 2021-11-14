@@ -4,6 +4,6 @@
 #include <stdio.h>
 #include <stddef.h>
 
-void emails_parser(const char *path_to_eml);
+int parser(const char *path_to_eml);
 
 #endif // PROJECT_INCLUDE_PARSER_H
