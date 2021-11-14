@@ -13,12 +13,13 @@ void emails_parser(const char *path_to_eml) {
     
     key_value values;
     create_kv(&values);
+    size_t TEST_KEY;
     size_t KEY;
     char value[BUFFER_SIZE * 4];
 
     //char *KEYS[] = {"From:", "To:", "Date:", "Content-Type:"};
 
-    //int is_last_str_value = 0;
+    int is_last_str_value = 0;
     while (!feof(email)) {
         char current_str[BUFFER_SIZE];
         fgets(current_str, BUFFER_SIZE, email);
@@ -56,20 +57,18 @@ void emails_parser(const char *path_to_eml) {
                     }
                     */
 
-            //is_last_str_value = 1;
+            is_last_str_value = 1;
 
-        /*} else if (is_last_str_value && !has_str_heading(current_str, &ind_of_end_of_heading, &KEY)) {
+        } else if (is_last_str_value && !has_str_heading(current_str, &ind_of_end_of_heading, &TEST_KEY)) {
             char add_value[BUFFER_SIZE];
-            //correct_reading(current_str, add_value, ind_of_end_of_heading);
+            correct_reading(current_str, add_value, ind_of_end_of_heading);
             strcat(value, add_value);
             //printf("%s",value);
-            set_value(value, KEY);
-        } else {
-            set_value(value, KEY);
-        }
-        */ 
             set_value(&values, value, KEY);
-        }    
+        } else {
+            set_value(&values, value, KEY);
+        }
+            
     }
     print_values(values);
     fclose(email);
