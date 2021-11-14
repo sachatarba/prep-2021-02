@@ -12,12 +12,12 @@
 #include <stdio.h>
 
 typedef struct key_value {
-    size_t from_value_len;
-    size_t to_value_len;
-    size_t date_value_len;
-    size_t content_type_value_len;
-    size_t boundary_value_len;
-    size_t parts;
+    int has_from_value;
+    int has_to_value;
+    int has_date_value;
+    int has_content_type_value;
+    int has_boundary_value;
+    int parts;
 
     char from_value[BUFFER_SIZE * 4];
     char to_value[BUFFER_SIZE * 4];
@@ -26,9 +26,9 @@ typedef struct key_value {
     char boundary_value[BUFFER_SIZE * 4];
 } key_value;
 
-key_value values;
+key_value create_kv(key_value *values);
 
-void set_value(char *value, size_t KEY);
+void set_value(key_value *values, char *value, size_t KEY);
 
 void print_values(key_value values);
 
