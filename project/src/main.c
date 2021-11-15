@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <ctype.h>
 
 #define DELTA_OF_BOUNDARY_BEGIN 9
 #define MULTIPART "multipart"
@@ -199,41 +200,24 @@ int is_multipart(Header* source) {
     return 0;
 }
 
-/*char* get_boundary(Header* source) {
-    if (strstr(source, BOUNDARY) == NULL) {
+char* str_to_lower(char* source) {
+    for (size_t i = 0; i < strlen(source); ++i) {
+        source[i] = tolower(source[i]);
+    }
+    return source;
+}
+
+char* get_boundary(Header* source) {
+    source->value = str_to_lower(source->value);
+    if (!is_multipart(source)) {
         return NULL;
     }
-    char* ptr_of_start_of_boundary;
-    char* ret[100];
-    int ind = 0;
-    ptr_of_start_of_boundary = strstr(source, BOUNDARY) + DELTA_OF_BOUNDARY_BEGIN;
-    if (ptr_of_start_of_boundary == '"' || ptr_of_start_of_boundary == "'") {
-        ++ptr_of_start_of_boundary;
-    }
-    while (*ptr_of_start_of_boundary != '\t' || *ptr_of_start_of_boundary != '\n' || *ptr_of_start_of_boundary != '\r' \
-          || *ptr_of_start_of_boundary != ' ' || *ptr_of_start_of_boundary != '"' || *ptr_of_start_of_boundary != '\'' \
-                                                                                  || *ptr_of_start_of_boundary != ';') {
-
-               ret[ind] = *ptr_of_start_of_boundary;
-               ++ptr_of_start_of_boundary;
-               ++ind;
-           }
-    ret[ind] = '\0';
-    return ret;
-}
-*/
-char* get_boundary(Header source) {
     char* boundary;
     char* left;
-    /*
-    split_string(source.value, ';', &left, &boundary);
-    split_string(source.value, ';', &left, &boundary);
-    split_string(source.value, ';', &left, &boundary);
-    split_string(boundary, '=', &left, &boundary);
-    split_string(boundary, '=', &left, &boundary);
-    split_string(boundary, '=', &left, &boundary);
-    */
-    char* ptr_boundary = strstr(source.value, BOUNDARY);
+    char* ptr_boundary = strstr(source->value, BOUNDARY);
+    if (*(ptr_boundary - 1) != ' ' && *(ptr_boundary - 1) != '\t' && *(ptr_boundary - 1) != ';' && *(ptr_boundary - 1) != '\r' && *(ptr_boundary - 1) != '\n') {
+         return NULL;
+    }
     split_string(ptr_boundary, '=', &left, &boundary);
     remove_all_char(boundary, '"');
     remove_all_char(boundary, '\'');
@@ -241,36 +225,36 @@ char* get_boundary(Header source) {
     return boundary;
 }
 
-int parts_counter(FILE* filename, char* boundary) {
-    if (filename == NULL) {
+int parts_counter(FILE* file, char* boundary) {
+    if (file == NULL) {
         return -1;
     }
-    size_t parts_counter = 0;
-    //int current = 1;
-    while (!feof(filename)) {
-        char current_str[BUFF_SIZE];
-        fgets(current_str, BUFF_SIZE, filename);
-        if (current_str == NULL) {
-            return -1;
-        }
-        remove_all_char(current_str, " ");
-        remove_all_char(current_str, "\t");
-        remove_all_char(current_str, "\n");
-        remove_all_char(current_str, ";");
-        if (strcmp(current_str, boundary)) {
-            ++parts_counter;
-            //printf("\n%i", current);
-        }
-        //++current;
+    if (boundary == NULL) {
+        return 1;
     }
-    return parts_counter - 2;
+    int parts = 0;
+    char buff[BUFF_SIZE];
+    char* tmp = new_s(3 + strlen(boundary));
+    tmp[0] = '-';
+    tmp[1] = '-';
+    tmp[2] = '\0';
+    tmp = strcat(tmp, boundary);
+    fseek(file, 0, SEEK_SET);
+    while (fgets(buff, BUFF_SIZE, file) != NULL) {
+        remove_all_char(buff, '\n');
+        remove_all_char(buff, '\r');
+        str_to_lower(buff);
+        if (strcmp(buff, tmp) == 0) {
+            parts += 1;
+        }
+    }
+    free(tmp);
+    return parts;
 }
 
 int parser(const char *path_to_eml) {
     FILE* file = fopen(path_to_eml, "r");
-    //FILE* file = fopen("btests/emails/poorly-hardly-viable-crow2.eml", "r");
     int size;
-    int parts = 1;
     Header** h = read_headers(file, &size);
     char* KEYS[] = {"From", "To", "Date"};
     for (size_t current_KEY = 0; current_KEY < 3; ++current_KEY) {
@@ -281,21 +265,11 @@ int parser(const char *path_to_eml) {
             printf("%c", '|');
         }
     } 
-    //puts("1");
+    printf("%d\n", parts_counter(file, get_boundary(find_header(h, size, "Content-Type"))));
+    // printf("%s", get_boundary(find_header()))
     fclose(file);
-    //FILE* file1 = fopen("btests/emails/poorly-hardly-viable-crow2.eml", "r");
-    FILE* file1 = fopen(path_to_eml, "r");
-    Header* source = find_header(h, size, "Content-Type");
-    if (is_multipart(source)) {
-        //printf("%s", get_boundary(*source));
-        parts = parts_counter(file1, get_boundary(*source));
-    }
-    printf("%i", parts);
     return 0;
-    //printf("%s", find_header(h, size, KEYS[0]) -> value);
-    //for (int i = 0; i < size; ++i) {
-    //    printf("|%s| -> |%s|\n", h[i]->key, h[i]->value);
-    }
+}
 
 int main(int argc, const char **argv) {
     if (argc != 2) {
