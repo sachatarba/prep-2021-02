@@ -20,12 +20,12 @@ test: $(TARGET)
 	./btests/run.sh $(TARGET)
 
 memtest: $(TARGET)
-	./btests/run.sh $(TARGET) --memcheck
+	./btests/run.sh $(TARGET) --memcheck 
 
 rebuild: clean build
 
 $(TARGET): $(SRCS)
-	$(CC) -Wall -Wextra  $(addprefix -I,$(HDRS)) -o $(TARGET) $(CFLAGS) $(SRCS)
+	$(CC) -Wall -Wextra -Werror  $(addprefix -I,$(HDRS)) -o $(TARGET) $(CFLAGS) $(SRCS)
 
 clean:
 	rm -f $(TARGET) ${VALGRIND_LOG}
