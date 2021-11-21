@@ -1,30 +1,31 @@
-.PHONY: all build rebuild check test testextra memtest memtestextra clean
+TARGET = ./main.out
+VALGRIND_LOG = "valgrind.log"
 
-all: clean check build test memtest testextra memtestextra
 
-clean:
-	rm -rf build
+SRCS = \
+	   project/src/main.c \
 
-build:
-	./build.sh
 
-rebuild: clean build
+
+.PHONY: all check build test memtest rebuild clean
+
+all: clean check build test memtest
 
 check:
 	./run_linters.sh
 
-test:
-	./build.sh -DWITH_MEMCHECK=OFF
-	./run_tests.sh
+build: $(TARGET)
 
-memtest:
-	./build.sh -DWITH_MEMCHECK=ON
-	./run_tests.sh --memcheck
+test: $(TARGET)
+	./btests/run.sh $(TARGET)
 
-testextra:
-	./build.sh -DWITH_MEMCHECK=OFF
-	./run_tests.sh --with-extra
+memtest: $(TARGET)
+	./btests/run.sh $(TARGET) --memcheck 
 
-memtestextra:
-	./build.sh -DWITH_MEMCHECK=ON
-	./run_tests.sh --with-extra --memcheck
+rebuild: clean build
+
+$(TARGET): $(SRCS)
+	$(CC) -Wall -Wextra -Werror  $(addprefix -I,$(HDRS)) -o $(TARGET) $(CFLAGS) $(SRCS)
+
+clean:
+	rm -f $(TARGET) ${VALGRIND_LOG}
