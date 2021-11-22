@@ -4,14 +4,14 @@
 #include <limits>
 namespace prep {
 Matrix::Matrix(size_t, size_t) {
-        body.reserve((rows + 5) * (cols + 5));
+        body.reserve((rows * cols + 1);
     }
 Matrix::Matrix(std::istream& is) {
     if (is.eof() || is.bad()) {
         throw InvalidMatrixStream();
     }
     if (is >> rows >> cols) {
-        body.reserve(rows  * cols);
+        body.reserve(rows  * cols + 1);
         for (size_t current_row = 0; current_row < rows; ++current_row) {
             for (size_t current_col = 0; current_col < cols; ++current_col) {
                 if (!(is >> body[rows * current_row + current_col])) {
