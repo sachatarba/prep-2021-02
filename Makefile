@@ -1,33 +1,30 @@
-TARGET = ./main.out
-VALGRIND_LOG = "valgrind.log"
+.PHONY: all build rebuild check test testextra memtest memtestextra clean
 
-HDRS = \
-		project/include/
+all: clean check build test memtest testextra memtestextra
 
-SRCS = \
-	   project/src/matrix.cpp \
+clean:
+	rm -rf build
 
+build:
+	./build.sh
 
-
-.PHONY: all check build test memtest rebuild clean
-
-all: clean check build test memtest
+rebuild: clean build
 
 check:
 	./run_linters.sh
 
-build: $(TARGET)
+test:
+	./build.sh -DWITH_MEMCHECK=OFF
+	./run_tests.sh
 
-test: $(TARGET)
-	./btests/run.sh $(TARGET)
+memtest:
+	./build.sh -DWITH_MEMCHECK=ON
+	./run_tests.sh --memcheck
 
-memtest: $(TARGET)
-	./btests/run.sh $(TARGET) --memcheck 
+testextra:
+	./build.sh -DWITH_MEMCHECK=OFF
+	./run_tests.sh --with-extra
 
-rebuild: clean build
-
-$(TARGET): $(SRCS)
-	$(CC) -Wall -Wextra -Werror  $(addprefix -I,$(HDRS)) -o $(TARGET) $(CFLAGS) $(SRCS)
-
-clean:
-	rm -f $(TARGET) ${VALGRIND_LOG}
+memtestextra:
+	./build.sh -DWITH_MEMCHECK=ON
+	./run_tests.sh --with-extra --memcheck
