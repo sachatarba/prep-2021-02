@@ -11,15 +11,14 @@ Matrix::Matrix(std::istream& is) {
         throw InvalidMatrixStream();
     }
     if (is >> rows >> cols) {
-        Matrix new_matrix(rows, cols);
+        body.reserve((rows + 5) * (cols + 5));
         for (size_t current_row = 0; current_row < rows; ++current_row) {
             for (size_t current_col = 0; current_col < cols; ++current_col) {
-                if (!(is >> new_matrix.body[rows * current_row + current_col])) {
+                if (!(is >> body[rows * current_row + current_col])) {
                     throw InvalidMatrixStream();
                 }
             }
         }
-        body = new_matrix.body;
     } else {
         throw InvalidMatrixStream();
     }
