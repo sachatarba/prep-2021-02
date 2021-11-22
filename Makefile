@@ -1,9 +1,12 @@
 TARGET = ./main.out
 VALGRIND_LOG = "valgrind.log"
 
+HDRS = \
+		project/include/exceptions.h \
+		project/include/matrix.h
 
 SRCS = \
-	   project/src/main.c \
+	   project/src/matrix.cpp \
 
 
 
