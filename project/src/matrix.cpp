@@ -11,7 +11,7 @@ Matrix::Matrix(std::istream& is) {
         throw InvalidMatrixStream();
     }
     if (is >> rows >> cols) {
-        body.reserve((rows + 5) * (cols + 5));
+        body.reserve(rows  * cols);
         for (size_t current_row = 0; current_row < rows; ++current_row) {
             for (size_t current_col = 0; current_col < cols; ++current_col) {
                 if (!(is >> body[rows * current_row + current_col])) {
