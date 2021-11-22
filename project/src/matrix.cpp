@@ -5,7 +5,7 @@
 namespace prep {
 Matrix::Matrix(size_t, size_t) {
         body.reserve(rows * cols);
-    }        
+    }
 Matrix::Matrix(std::istream& is) {
     if (is.eof() || is.bad()) {
         throw InvalidMatrixStream();
@@ -25,7 +25,7 @@ Matrix::Matrix(std::istream& is) {
 }
 size_t Matrix::getRows() const {
     return rows;
-    };
+    }
 size_t Matrix::getCols() const {
     return cols;
 }
@@ -122,7 +122,7 @@ Matrix Matrix::transp() const {
 
 double Matrix::det() const {
     int size = rows;
-    
+ 
     if (size == 1) {
         return body[0];
     }
@@ -161,7 +161,7 @@ Matrix Matrix::adj() const {
             for (size_t current_pos = 0, counter = 0; current_pos < size * size; ++current_pos) {
                 if (current_pos % size != current_col && current_pos / size != current_row) {
                     double element_of_minor = 1;
-                    element_of_minor = (*this)(current_pos / size, current_pos % size); 
+                    element_of_minor = (*this)(current_pos / size, current_pos % size);
                     temp_matrix_minor.body[counter] = element_of_minor;
                     ++counter;
                 }
@@ -200,12 +200,14 @@ std::ostream& operator<<(std::ostream& os, const Matrix& matrix) {
         for (size_t current_col = 0; current_col < matrix.cols; ++current_col) {
             os << matrix.body[matrix.rows * current_row + current_col];
             if (current_col != matrix.cols - 1) {
-                os << std::setprecision(std::numeric_limits<double>::max_digits10) << matrix.body[current_row * matrix.rows + current_col] << " ";
+                os << std::setprecision(std::numeric_limits<double>::max_digits10) \
+                 << matrix.body[current_row * matrix.rows + current_col] << " ";
             } else {
-                os << std::setprecision(std::numeric_limits<double>::max_digits10) << matrix.body[current_row * matrix.rows + current_col] << std::endl;
+                os << std::setprecision(std::numeric_limits<double>::max_digits10) \
+                 << matrix.body[current_row * matrix.rows + current_col] << std::endl;
             }
         }
     }
     return os;
 }
-}
+} // namespace prep
