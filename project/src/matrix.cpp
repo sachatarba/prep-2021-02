@@ -4,21 +4,22 @@
 #include <limits>
 namespace prep {
 Matrix::Matrix(size_t, size_t) {
-        body.reserve((rows + 5) * (cols + 5));
+        body.reserve(rows * cols);
     }
 Matrix::Matrix(std::istream& is) {
     if (is.eof() || is.bad()) {
         throw InvalidMatrixStream();
     }
     if (is >> rows >> cols) {
-        body.reserve((rows + 5) * (cols + 5));
+        Matrix new_matrix(rows, cols);
         for (size_t current_row = 0; current_row < rows; ++current_row) {
             for (size_t current_col = 0; current_col < cols; ++current_col) {
-                if (!(is >> body[rows * current_row + current_col])) {
+                if (!(is >> new_matrix.body[rows * current_row + current_col])) {
                     throw InvalidMatrixStream();
                 }
             }
         }
+        body = new_matrix.body;
     } else {
         throw InvalidMatrixStream();
     }
