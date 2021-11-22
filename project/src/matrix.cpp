@@ -4,7 +4,7 @@
 #include <limits>
 namespace prep {
 Matrix::Matrix(size_t, size_t) {
-        body.reserve((rows * cols + 1);
+        body.reserve(rows * cols + 1);
     }
 Matrix::Matrix(std::istream& is) {
     if (is.eof() || is.bad()) {
