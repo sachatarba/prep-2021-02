@@ -122,7 +122,7 @@ Matrix Matrix::transp() const {
 
 double Matrix::det() const {
     int size = rows;
- 
+
     if (size == 1) {
         return body[0];
     }
@@ -210,4 +210,4 @@ std::ostream& operator<<(std::ostream& os, const Matrix& matrix) {
     }
     return os;
 }
-} // namespace prep
+}  // namespace prep

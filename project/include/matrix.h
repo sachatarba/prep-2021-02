@@ -36,10 +36,11 @@ class Matrix {
   double det() const;
   Matrix adj() const;
   Matrix inv() const;
-  private:
-   size_t rows;
-   size_t cols;
-   std::vector<double> body;
+  
+ private:
+  size_t rows;
+  size_t cols;
+  std::vector<double> body;
 };
 
 Matrix operator*(double val, const Matrix& matrix);
